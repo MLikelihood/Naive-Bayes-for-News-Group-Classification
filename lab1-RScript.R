@@ -1,0 +1,638 @@
+library(e1071)
+trainLabel=
+  nb_model <- naiveBayes(Class~.,data ="C:\\Users\\shuzhang\\Downloads\\20newsgroups\\20newsgroups\\train_data.csv")
+#  cuts <- split(trainData,c(480,581,572,587,575,592,582,592,596,594,598,594,591,594,593,599,545,564,464,376))
+#   s= split(trainData$V1, rep(1:20, c(480,581,572,587,575,592,582,592,596,594,598,594,591,594,593,599,545,564,464,376)))
+
+
+
+
+trainLabel= read.csv(file="C:\\Users\\shuzhang\\Downloads\\20newsgroups\\20newsgroups\\train_label.csv", header=FALSE, sep=",")
+docsInGroup=table(trainLabel)
+prior=docsInGroup/sum(docsInGroup)
+
+trainData= read.csv(file="C:\\Users\\shuzhang\\Downloads\\20newsgroups\\20newsgroups\\train_data.csv", header=FALSE, sep=",")
+head(trainData)
+groupTotalWords=docsInGroup[0]
+for(i in 1:20){
+  groupTotalWords[i]=sum(trainData$V3[which(trainData$V1<=sum(docsInGroup[c(1:i)]))])
+}
+for(i in 20:2){
+  groupTotalWords[i]=groupTotalWords[i]-groupTotalWords[i-1]
+}
+
+docIDMax=0
+wordCountsInGroup=matrix(0,nrow=61188,ncol=20)
+j=1
+i=1
+while(j<=20){
+  docIDMax=docIDMax+docsInGroup[j]
+  if(trainData$V1<docIDMax)
+    wordCountsInGroup[trainData$V2[i]][j]=sum(trainData$V3[which(trainData$V2==trainData$V2[i]&&trainData$V1<=docIDMax)])
+  else{
+    j=j+1
+  }
+}
+
+d=trainData$V1
+for(d in 1:480){
+  table(c(trainData$V2,trainData$V3))
+}
+
+wordCountsInGroup=matrix(0,nrow=61188,ncol=20)    
+
+z=data.frame(a=trainData$V2[which(trainData$V1>=1&trainData$V1<=480)],b=trainData$V3[which(trainData$V1>=1&trainData$V1<=480)])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),1]=q$x[j]
+}
+
+
+#  for(i in 0:19){
+ # doc=docsInGroup
+#z=data.frame(a=trainData$V2[which(trainData$V1>=sum(doc[0:i])+1&trainData$V1<=sum(doc[1:i+1]))],b=trainData$V3[which(trainData$V1>=sum(doc[0:i])+1&trainData$V1<=sum(doc[1:i+1]))])
+#q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+ # for(j in 1:length(q$x)){
+ # wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),i+1]=q$x[j]
+#}
+
+ # }
+
+
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+480&trainData$V1<=480+581)],b=trainData$V3[which(trainData$V1>=1+480&trainData$V1<=480+581)])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),2]=q$x[j]
+}
+
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:2])&trainData$V1<=sum(doc[1:3]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:2])&trainData$V1<=sum(doc[1:3]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),3]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:3])&trainData$V1<=sum(doc[1:4]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:3])&trainData$V1<=sum(doc[1:4]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),4]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:4])&trainData$V1<=sum(doc[1:5]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:4])&trainData$V1<=sum(doc[1:5]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),5]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:5])&trainData$V1<=sum(doc[1:6]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:5])&trainData$V1<=sum(doc[1:6]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),6]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:6])&trainData$V1<=sum(doc[1:7]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:6])&trainData$V1<=sum(doc[1:7]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),7]=q$x[j]
+}
+
+
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:7])&trainData$V1<=sum(doc[1:8]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:7])&trainData$V1<=sum(doc[1:8]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),8]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:8])&trainData$V1<=sum(doc[1:9]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:8])&trainData$V1<=sum(doc[1:9]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),9]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:9])&trainData$V1<=sum(doc[1:10]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:9])&trainData$V1<=sum(doc[1:10]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),10]=q$x[j]
+}
+
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:10])&trainData$V1<=sum(doc[1:11]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:10])&trainData$V1<=sum(doc[1:11]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),11]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:11])&trainData$V1<=sum(doc[1:12]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:11])&trainData$V1<=sum(doc[1:12]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),12]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:12])&trainData$V1<=sum(doc[1:13]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:12])&trainData$V1<=sum(doc[1:13]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),13]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:13])&trainData$V1<=sum(doc[1:14]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:13])&trainData$V1<=sum(doc[1:14]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),14]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:14])&trainData$V1<=sum(doc[1:15]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:14])&trainData$V1<=sum(doc[1:15]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),15]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:15])&trainData$V1<=sum(doc[1:16]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:15])&trainData$V1<=sum(doc[1:16]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),16]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:16])&trainData$V1<=sum(doc[1:17]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:16])&trainData$V1<=sum(doc[1:17]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),17]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:17])&trainData$V1<=sum(doc[1:18]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:17])&trainData$V1<=sum(doc[1:18]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),18]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:18])&trainData$V1<=sum(doc[1:19]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:18])&trainData$V1<=sum(doc[1:19]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),19]=q$x[j]
+}
+z=data.frame(a=trainData$V2[which(trainData$V1>=1+sum(doc[1:19])&trainData$V1<=sum(doc[1:20]))],b=trainData$V3[which(trainData$V1>=1+sum(doc[1:19])&trainData$V1<=sum(doc[1:20]))])
+q=as.data.frame(aggregate(z$b,by=list(factor(z$a)), FUN=sum))
+for(j in 1:length(q$x)){
+  wordCountsInGroup[as.numeric(levels(q$Group.1)[j]),20]=q$x[j]
+}
+
+is.numeric(as.numeric(levels(q$Group.1)[1]))
+
+wordProbMLE=matrix(0,nrow=61188,ncol=20) 
+wordProbBE=matrix(0,nrow=61188,ncol=20) 
+for(i in 1:61188){
+  for(j in 1:20){ 
+wordProbMLE[i,j]=wordCountsInGroup[i,j]/groupTotalWords[j]
+wordProbBE[i,j]=(wordCountsInGroup[i,j]+1)/(groupTotalWords[j]+61188)
+  }
+}
+
+
+
+
+
+
+
+#CLASSIFICATION MAKING-training data
+
+#for doc i, get NBbe, NBmle
+
+NBbe=matrix(0,nrow=11269,ncol=20)
+for(i in 1:11269){ 
+for(j in 1:20){ 
+
+  NBbe[i,j]=log(prior[j])+sum(log(wordProbBE[trainData$V2[which(trainData$V1==i)],j]))
+}
+  print(i)
+}
+
+maxIndex=vector()
+for(k in 1:11269){ 
+maxIndex[k]=which.max(NBbe[k,])
+}
+
+
+
+
+#i=1
+#  for(k in 1:11269){
+   
+#   if(k<=sum(docsInGroup[1:i])&maxIndex[k]==i){
+#      accurateDocsInGroup[i]=accurateDocsInGroup[i]+1
+#    }
+#   else if(k>sum(docsInGroup[1:i])&maxIndex[k]==i+1){
+#     accuracyOfGroup[i]=accurateDocsInGroup[i]/docsInGroup[i]
+#      i=i+1
+#      accurateDocsInGroup[i]=1}
+#    else{
+#      i=i+1
+#    }
+      
+ #   }
+
+
+
+accurateDocsInGroup=rep(0,20)
+accuracyOfGroup=rep(0,20)
+
+for(k in 1:sum(docsInGroup[1])){
+  if(maxIndex[k]==1){
+    accurateDocsInGroup[1]=accurateDocsInGroup[1]+1
+  }
+}
+
+
+for(k in 1+sum(docsInGroup[1]):sum(docsInGroup[1:2])){
+  if(maxIndex[k]==2){
+    accurateDocsInGroup[2]=accurateDocsInGroup[2]+1
+  }
+}
+
+for(k in 1+sum(docsInGroup[1:2]):sum(docsInGroup[1:3])){
+  if(maxIndex[k]==3){
+    accurateDocsInGroup[3]=accurateDocsInGroup[3]+1
+  }
+}
+
+for(k in 1+sum(docsInGroup[1:3]):sum(docsInGroup[1:4])){
+  if(maxIndex[k]==4){
+    accurateDocsInGroup[4]=accurateDocsInGroup[4]+1
+  }
+}
+
+for(k in 1+sum(docsInGroup[1:4]):sum(docsInGroup[1:5])){
+  if(maxIndex[k]==5){
+    accurateDocsInGroup[5]=accurateDocsInGroup[5]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:5]):sum(docsInGroup[1:6])){
+  if(maxIndex[k]==6){
+    accurateDocsInGroup[6]=accurateDocsInGroup[6]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:6]):sum(docsInGroup[1:7])){
+  if(maxIndex[k]==7){
+    accurateDocsInGroup[7]=accurateDocsInGroup[7]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:7]):sum(docsInGroup[1:8])){
+  if(maxIndex[k]==8){
+    accurateDocsInGroup[8]=accurateDocsInGroup[8]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:8]):sum(docsInGroup[1:9])){
+  if(maxIndex[k]==9){
+    accurateDocsInGroup[9]=accurateDocsInGroup[9]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:9]):sum(docsInGroup[1:10])){
+  if(maxIndex[k]==10){
+    accurateDocsInGroup[10]=accurateDocsInGroup[10]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:10]):sum(docsInGroup[1:11])){
+  if(maxIndex[k]==11){
+    accurateDocsInGroup[11]=accurateDocsInGroup[11]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:11]):sum(docsInGroup[1:12])){
+  if(maxIndex[k]==12){
+    accurateDocsInGroup[12]=accurateDocsInGroup[12]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:12]):sum(docsInGroup[1:13])){
+  if(maxIndex[k]==13){
+    accurateDocsInGroup[13]=accurateDocsInGroup[13]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:13]):sum(docsInGroup[1:14])){
+  if(maxIndex[k]==14){
+    accurateDocsInGroup[14]=accurateDocsInGroup[14]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:14]):sum(docsInGroup[1:15])){
+  if(maxIndex[k]==15){
+    accurateDocsInGroup[15]=accurateDocsInGroup[15]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:15]):sum(docsInGroup[1:16])){
+  if(maxIndex[k]==16){
+    accurateDocsInGroup[16]=accurateDocsInGroup[16]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:16]):sum(docsInGroup[1:17])){
+  if(maxIndex[k]==17){
+    accurateDocsInGroup[17]=accurateDocsInGroup[17]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:17]):sum(docsInGroup[1:18])){
+  if(maxIndex[k]==18){
+      accurateDocsInGroup[18]=accurateDocsInGroup[18]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:18]):sum(docsInGroup[1:19])){
+  if(maxIndex[k]==19){
+    accurateDocsInGroup[19]=accurateDocsInGroup[19]+1
+  }
+}
+for(k in 1+sum(docsInGroup[1:19]):sum(docsInGroup[1:20])){
+  if(maxIndex[k]==20){
+    accurateDocsInGroup[20]=accurateDocsInGroup[20]+1
+  }
+}
+
+for(i in 1:20){
+  accuracyOfGroup[i]=accurateDocsInGroup[i]/docsInGroup[i]
+}
+
+overallAccuracy=sum(accurateDocsInGroup[1:20])/sum(docsInGroup[1:20])
+
+h=cbind(as.vector(trainLabel$V1),as.vector(maxIndex)) 
+tab = table (h[,1], h[,2])
+print(tab)
+
+
+prior
+wordProbMLE[5000:5005,11:15]
+wordProbBE[5000:5005,11:15]
+
+
+
+
+
+
+
+################################################################################################################3
+
+##CLASSIFICATION MAKING -TEST DATA-Bayesian estimator
+
+
+testLabel= read.csv(file="C:\\Users\\shuzhang\\Downloads\\20newsgroups\\20newsgroups\\test_label.csv", header=FALSE, sep=",")
+docsInGroupT=table(testLabel)
+testData= read.csv(file="C:\\Users\\shuzhang\\Downloads\\20newsgroups\\20newsgroups\\test_data.csv", header=FALSE, sep=",")
+NBbeT=matrix(0,nrow=7505,ncol=20)
+for(i in 1:7505){ 
+  for(j in 1:20){ 
+    
+    NBbeT[i,j]=log(prior[j])+sum(log(wordProbBE[testData$V2[which(testData$V1==i)],j]))
+  }
+  print(i)
+}
+
+maxIndexT=vector('numeric')
+for(k in 1:7505){ 
+  maxIndexT[k]=which.max(NBbeT[k,])
+}
+
+
+
+accurateDocsInGroupT=rep(0,20)
+
+for(k in 1:sum(docsInGroupT[1])){
+  if(maxIndexT[k]==1){
+    accurateDocsInGroupT[1]=accurateDocsInGroupT[1]+1
+  }
+}
+
+
+for(k in 1+sum(docsInGroupT[1]):sum(docsInGroupT[1:2])){
+  if(maxIndexT[k]==2){
+    accurateDocsInGroupT[2]=accurateDocsInGroupT[2]+1
+  }
+}
+
+for(k in 1+sum(docsInGroupT[1:2]):sum(docsInGroupT[1:3])){
+  if(maxIndexT[k]==3){
+    accurateDocsInGroupT[3]=accurateDocsInGroupT[3]+1
+  }
+}
+
+for(k in 1+sum(docsInGroupT[1:3]):sum(docsInGroupT[1:4])){
+  if(maxIndexT[k]==4){
+    accurateDocsInGroupT[4]=accurateDocsInGroupT[4]+1
+  }
+}
+
+for(k in 1+sum(docsInGroupT[1:4]):sum(docsInGroupT[1:5])){
+  if(maxIndexT[k]==5){
+    accurateDocsInGroupT[5]=accurateDocsInGroupT[5]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:5]):sum(docsInGroupT[1:6])){
+  if(maxIndexT[k]==6){
+    accurateDocsInGroupT[6]=accurateDocsInGroupT[6]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:6]):sum(docsInGroupT[1:7])){
+  if(maxIndexT[k]==7){
+    accurateDocsInGroupT[7]=accurateDocsInGroupT[7]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:7]):sum(docsInGroupT[1:8])){
+  if(maxIndexT[k]==8){
+    accurateDocsInGroupT[8]=accurateDocsInGroupT[8]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:8]):sum(docsInGroupT[1:9])){
+  if(maxIndexT[k]==9){
+    accurateDocsInGroupT[9]=accurateDocsInGroupT[9]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:9]):sum(docsInGroupT[1:10])){
+  if(maxIndexT[k]==10){
+    accurateDocsInGroupT[10]=accurateDocsInGroupT[10]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:10]):sum(docsInGroupT[1:11])){
+  if(maxIndexT[k]==11){
+    accurateDocsInGroupT[11]=accurateDocsInGroupT[11]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:11]):sum(docsInGroupT[1:12])){
+  if(maxIndexT[k]==12){
+    accurateDocsInGroupT[12]=accurateDocsInGroupT[12]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:12]):sum(docsInGroupT[1:13])){
+  if(maxIndexT[k]==13){
+    accurateDocsInGroupT[13]=accurateDocsInGroupT[13]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:13]):sum(docsInGroupT[1:14])){
+  if(maxIndexT[k]==14){
+    accurateDocsInGroupT[14]=accurateDocsInGroupT[14]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:14]):sum(docsInGroupT[1:15])){
+  if(maxIndexT[k]==15){
+    accurateDocsInGroupT[15]=accurateDocsInGroupT[15]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:15]):sum(docsInGroupT[1:16])){
+  if(maxIndexT[k]==16){
+    accurateDocsInGroupT[16]=accurateDocsInGroupT[16]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:16]):sum(docsInGroupT[1:17])){
+  if(maxIndexT[k]==17){
+    accurateDocsInGroupT[17]=accurateDocsInGroupT[17]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:17]):sum(docsInGroupT[1:18])){
+  if(maxIndexT[k]==18){
+    accurateDocsInGroupT[18]=accurateDocsInGroupT[18]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:18]):sum(docsInGroupT[1:19])){
+  if(maxIndexT[k]==19){
+    accurateDocsInGroupT[19]=accurateDocsInGroupT[19]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:19]):sum(docsInGroupT[1:20])){
+  if(maxIndexT[k]==20){
+    accurateDocsInGroupT[20]=accurateDocsInGroupT[20]+1
+  }
+}
+
+
+
+accuracyOfGroupT=rep(0,20)
+
+for(i in 1:20){
+  accuracyOfGroupT[i]=accurateDocsInGroupT[i]/docsInGroupT[i]
+}
+
+overallAccuracyT=sum(accurateDocsInGroupT[1:20])/sum(docsInGroupT[1:20])
+
+hT=cbind(as.vector(testLabel$V1),as.vector(maxIndexT)) 
+tabT = table (hT[,1], hT[,2])
+print(tabT)
+
+
+
+
+#######################################################################################################
+#CLASSIFICATION-TEST-DATA-MAXIMUM LIKELIHOOD
+
+
+NBbeTM=matrix(0,nrow=7505,ncol=20)
+for(i in 1:7505){ 
+  for(j in 1:20){ 
+    
+    NBbeTM[i,j]=log(prior[j])+sum(log(wordProbMLE[testData$V2[which(testData$V1==i)],j]))
+  }
+  print(i)
+}
+
+maxIndexTM=vector('numeric')
+for(k in 1:7505){ 
+  maxIndexTM[k]=which.max(NBbeTM[k,])
+}
+
+
+
+accurateDocsInGroupTM=rep(0,20)
+
+for(k in 1:sum(docsInGroupT[1])){
+  if(maxIndexTM[k]==1){
+    accurateDocsInGroupTM[1]=accurateDocsInGroupTM[1]+1
+  }
+}
+
+
+for(k in 1+sum(docsInGroupT[1]):sum(docsInGroupT[1:2])){
+  if(maxIndexTM[k]==2){
+    accurateDocsInGroupTM[2]=accurateDocsInGroupTM[2]+1
+  }
+}
+
+for(k in 1+sum(docsInGroupT[1:2]):sum(docsInGroupT[1:3])){
+  if(maxIndexTM[k]==3){
+    accurateDocsInGroupTM[3]=accurateDocsInGroupTM[3]+1
+  }
+}
+
+for(k in 1+sum(docsInGroupT[1:3]):sum(docsInGroupT[1:4])){
+  if(maxIndexTM[k]==4){
+    accurateDocsInGroupTM[4]=accurateDocsInGroupTM[4]+1
+  }
+}
+
+for(k in 1+sum(docsInGroupT[1:4]):sum(docsInGroupT[1:5])){
+  if(maxIndexTM[k]==5){
+    accurateDocsInGroupTM[5]=accurateDocsInGroupTM[5]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:5]):sum(docsInGroupT[1:6])){
+  if(maxIndexTM[k]==6){
+    accurateDocsInGroupTM[6]=accurateDocsInGroupTM[6]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:6]):sum(docsInGroupT[1:7])){
+  if(maxIndexTM[k]==7){
+    accurateDocsInGroupTM[7]=accurateDocsInGroupTM[7]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:7]):sum(docsInGroupT[1:8])){
+  if(maxIndexTM[k]==8){
+    accurateDocsInGroupTM[8]=accurateDocsInGroupTM[8]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:8]):sum(docsInGroupT[1:9])){
+  if(maxIndexTM[k]==9){
+    accurateDocsInGroupTM[9]=accurateDocsInGroupTM[9]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:9]):sum(docsInGroupT[1:10])){
+  if(maxIndexTM[k]==10){
+    accurateDocsInGroupTM[10]=accurateDocsInGroupTM[10]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:10]):sum(docsInGroupT[1:11])){
+  if(maxIndexTM[k]==11){
+    accurateDocsInGroupTM[11]=accurateDocsInGroupTM[11]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:11]):sum(docsInGroupT[1:12])){
+  if(maxIndexTM[k]==12){
+    accurateDocsInGroupTM[12]=accurateDocsInGroupTM[12]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:12]):sum(docsInGroupT[1:13])){
+  if(maxIndexTM[k]==13){
+    accurateDocsInGroupTM[13]=accurateDocsInGroupTM[13]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:13]):sum(docsInGroupT[1:14])){
+  if(maxIndexTM[k]==14){
+    accurateDocsInGroupTM[14]=accurateDocsInGroupTM[14]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:14]):sum(docsInGroupT[1:15])){
+  if(maxIndexTM[k]==15){
+    accurateDocsInGroupTM[15]=accurateDocsInGroupTM[15]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:15]):sum(docsInGroupT[1:16])){
+  if(maxIndexTM[k]==16){
+    accurateDocsInGroupTM[16]=accurateDocsInGroupTM[16]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:16]):sum(docsInGroupT[1:17])){
+  if(maxIndexTM[k]==17){
+    accurateDocsInGroupTM[17]=accurateDocsInGroupTM[17]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:17]):sum(docsInGroupT[1:18])){
+  if(maxIndexTM[k]==18){
+    accurateDocsInGroupTM[18]=accurateDocsInGroupTM[18]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:18]):sum(docsInGroupT[1:19])){
+  if(maxIndexTM[k]==19){
+    accurateDocsInGroupTM[19]=accurateDocsInGroupTM[19]+1
+  }
+}
+for(k in 1+sum(docsInGroupT[1:19]):sum(docsInGroupT[1:20])){
+  if(maxIndexTM[k]==20){
+    accurateDocsInGroupTM[20]=accurateDocsInGroupTM[20]+1
+  }
+}
+
+
+
+accuracyOfGroupTM=rep(0,20)
+
+for(i in 1:20){
+  accuracyOfGroupTM[i]=accurateDocsInGroupTM[i]/docsInGroupT[i]
+}
+
+overallAccuracyTM=sum(accurateDocsInGroupTM[1:20])/sum(docsInGroupT[1:20])
+
+hTM=cbind(as.vector(testLabel$V1),as.vector(maxIndexTM)) 
+tabTM = table (hTM[,1], hTM[,2])
+print(tabTM)
+
